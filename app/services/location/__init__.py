@@ -1,28 +1,22 @@
-"""app.services.location"""
-from abc import ABC, abstractmethod
+"""app.data"""
 
+from ..services.location.csbs import CSBSLocationService
+from ..services.location.jhu import JhuLocationService
+from ..services.location.nyt import NYTLocationService
+from ..services.location.AdapterLocation import Alocation
 
-class LocationService(ABC):
+# Mapping of services to data-sources.
+DATA_SOURCES = {
+    "jhu": JhuLocationService(),
+    "csbs": CSBSLocationService(),
+    "nyt": NYTLocationService(),
+}
+def data_source(source):
     """
-    Service for retrieving locations.
+    Retrieves the provided data-source service.
+    :returns: The service.
+    :rtype: LocationService
     """
+    return DATA_SOURCES.get(source.lower())
 
-    @abstractmethod
-    async def get_all(self):
-        """
-        Gets and returns all of the locations.
-
-        :returns: The locations.
-        :rtype: List[Location]
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get(self, id):  # pylint: disable=redefined-builtin,invalid-name
-        """
-        Gets and returns location with the provided id.
-
-        :returns: The location.
-        :rtype: Location
-        """
-        raise NotImplementedError
+    return Alocation(DATA_SOURCES.get(source.lower()))
